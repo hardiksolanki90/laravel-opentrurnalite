@@ -1,0 +1,17 @@
+{
+  "name": "opentrurnalite",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "db:migrate": "prisma migrate dev --schema=prisma/schema.prisma",
+    "db:generate": "prisma generate --schema=prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.5.0",
+    "@types/node": "^22.0.0"
+  }
+}
