@@ -7,12 +7,19 @@
     "dev": "turbo run dev",
     "test": "turbo run test",
     "lint": "turbo run lint",
-    "db:migrate": "prisma migrate dev --schema=prisma/schema.prisma",
-    "db:generate": "prisma generate --schema=prisma/schema.prisma"
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate"
   },
   "devDependencies": {
+    "@types/node": "^22.0.0",
+    "prisma": "^7.8.0",
     "turbo": "^2.0.0",
-    "typescript": "^5.5.0",
-    "@types/node": "^22.0.0"
+    "typescript": "^5.5.0"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "@types/pg": "^8.20.0",
+    "pg": "^8.21.0"
   }
 }
