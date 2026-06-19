@@ -3,8 +3,6 @@ import { z } from 'zod'
 import { hashPassword, signToken } from '@opentrurnalite/auth'
 import { ConflictError } from '@opentrurnalite/shared'
 
-const JWT_SECRET = process.env.JWT_SECRET ?? 'dev-secret-change-me-minimum-32-chars'
-
 const registerBody = z.object({
   email: z.string().email(),
   password: z.string().min(8),
@@ -26,12 +24,19 @@ const authRegisterRoute: FastifyPluginAsync = async (app) => {
     }
 
     const passwordHash = await hashPassword(password)
-    const user = await app.prisma.user.create({
-      data: { email, passwordHash, name },
-      select: { id: true, email: true, name: true, createdAt: true },
-    })
+    let user
+    try {
+      user = await app.prisma.user.create({
+        data: { email, passwordHash, name },
+        select: { id: true, email: true, name: true, createdAt: true },
+      })
+    } catch (err: any) {
+      if (err?.code === 'P2002') throw new ConflictError('Email already registered')
+      throw err
+    }
 
-    const token = signToken({ sub: user.id, email: user.email }, JWT_SECRET)
+    const jwtSecret = process.env.JWT_SECRET ?? 'dev-secret-change-me-minimum-32-chars'
+    const token = signToken({ sub: user.id, email: user.email }, jwtSecret)
 
     return reply.status(201).send({ token, user })
   })

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import Fastify from 'fastify'
 import type { FastifyInstance } from 'fastify'
 import authRegisterRoute from '../src/routes/auth/register.js'
@@ -25,12 +25,9 @@ function buildTestApp(): FastifyInstance {
         }
         users.push(user)
         if (select) {
-          const result: any = {}
-          if (select.id) result.id = user.id
-          if (select.email) result.email = user.email
-          if (select.name) result.name = user.name
-          if (select.createdAt) result.createdAt = user.createdAt
-          return result
+          return Object.fromEntries(
+            Object.keys(select).map((k) => [k, (user as any)[k]])
+          )
         }
         return user
       },
@@ -49,6 +46,10 @@ describe('POST /auth/register', () => {
     await app.ready()
   })
 
+  afterEach(async () => {
+    await app.close()
+  })
+
   it('creates user and returns 201 with token', async () => {
     const res = await app.inject({
       method: 'POST',
@@ -59,7 +60,6 @@ describe('POST /auth/register', () => {
     const body = res.json()
     expect(body).toHaveProperty('token')
     expect(body.user.email).toBe('test@example.com')
-    await app.close()
   })
 
   it('returns 409 if email already exists', async () => {
@@ -67,6 +67,5 @@ describe('POST /auth/register', () => {
     await app.inject({ method: 'POST', url: '/auth/register', payload })
     const res = await app.inject({ method: 'POST', url: '/auth/register', payload })
     expect(res.statusCode).toBe(409)
-    await app.close()
   })
 })
