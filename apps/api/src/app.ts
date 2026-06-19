@@ -5,6 +5,7 @@ import prismaPlugin from './plugins/prisma.js'
 import redisPlugin from './plugins/redis.js'
 import healthRoute from './routes/health.js'
 import authRegisterRoute from './routes/auth/register.js'
+import authLoginRoute from './routes/auth/login.js'
 
 export async function buildApp() {
   const app = Fastify({ logger: true })
@@ -15,6 +16,7 @@ export async function buildApp() {
   await app.register(redisPlugin)
   await app.register(healthRoute)
   await app.register(authRegisterRoute, { prefix: '/auth' })
+  await app.register(authLoginRoute, { prefix: '/auth' })
 
   return app
 }
