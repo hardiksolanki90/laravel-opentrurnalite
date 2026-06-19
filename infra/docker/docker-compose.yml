@@ -27,6 +27,24 @@ services:
       timeout: 3s
       retries: 5
 
+  api:
+    build:
+      context: ../../
+      dockerfile: infra/docker/Dockerfile.api
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/opentrurnalite
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: docker-dev-secret-minimum-32-chars-long
+      NODE_ENV: development
+      PORT: 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
 volumes:
   postgres_data:
   redis_data:
