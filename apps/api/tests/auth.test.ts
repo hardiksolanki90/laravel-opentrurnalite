@@ -116,6 +116,7 @@ describe('POST /auth/login', () => {
       payload: { email: 'wrong@example.com', password: 'wrongpassword' },
     })
     expect(res.statusCode).toBe(401)
+    expect(res.json().error).toBe('Invalid credentials')
   })
 
   it('returns 401 for unknown email', async () => {
@@ -125,5 +126,6 @@ describe('POST /auth/login', () => {
       payload: { email: 'nobody@example.com', password: 'password123' },
     })
     expect(res.statusCode).toBe(401)
+    expect(res.json().error).toBe('Invalid credentials')
   })
 })

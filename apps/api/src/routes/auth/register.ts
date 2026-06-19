@@ -2,6 +2,7 @@ import type { FastifyPluginAsync } from 'fastify'
 import { z } from 'zod'
 import { hashPassword, signToken } from '@opentrurnalite/auth'
 import { ConflictError } from '@opentrurnalite/shared'
+import { getJwtSecret } from '../../lib/jwt-secret.js'
 
 const registerBody = z.object({
   email: z.string().email(),
@@ -35,7 +36,7 @@ const authRegisterRoute: FastifyPluginAsync = async (app) => {
       throw err
     }
 
-    const jwtSecret = process.env.JWT_SECRET ?? 'dev-secret-change-me-minimum-32-chars'
+    const jwtSecret = getJwtSecret()
     const token = signToken({ sub: user.id, email: user.email }, jwtSecret)
 
     return reply.status(201).send({ token, user })
