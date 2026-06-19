@@ -6,3 +6,6 @@ allowBuilds:
   '@prisma/engines': true
   esbuild: true
   prisma: true
+overrides:
+  '@types/react': '18.2.79'
+  '@types/react-dom': '18.2.25'
